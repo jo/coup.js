@@ -3,6 +3,71 @@ Coup.js
 
 Tiny script plays client side with CouchDB rewrites, lists and shows.
 
+With Couch.js you can build a web that
+
+1. Render html server side on first request
+2. Handle subsequent calls client side
+
+This technique results in 
+
+* fast pageload
+* SEO friendly
+* less bandwidth
+* less CPU usage
+
+Coup.js consists of a small client side and an even smaller server side library.
+
+On *server side*, inside your _show_ or _list_ function, you `require("lib/coup.couch.js")`
+and call `coup.show()` respectively `coup.list()`, which render the templates
+based on query parameters, which you set in the rewrite rules.
+
+On *client side* you include the `coup.js` script and call `Coup()`.
+The rewrite rules gets parsed and handed over to [page.js](https://github.com/visionmedia/page.js).
+Now the client takes control over the rendering of the page, fetching the views and docs
+via ajax requests.
+
+
+### rewrites
+
+Define the route with a template:
+
+    {
+      "from": ":id",
+      "to": "_show/layout/:id",
+      "query": {
+        "template": "page"
+      }
+    }
+
+### models
+
+Think of Coup.js models as of transform functions, which takes the json of a document
+or a view as input and returns an object, which is used as a view in mustache:
+
+    exports.view = function(doc) {
+      doc.profile_image_url = '/' + encodeURIComponent(doc._id) + '/profile_image.jpg';
+
+      return doc;
+    };
+
+### templates
+
+The [mustache.js](https://github.com/janl/mustache.js) templates are stored inside the design document.
+
+    <h2>{{title}}</h2>
+    <img src="{{{profile_image_url}}}">
+
+
+### shows and lists
+
+Require `coup` and call it:
+
+    function(doc, req) {
+      return require('lib/coup').show(this, doc, req);
+    }
+
+
+
 Look at [examples](coup.js/tree/master/examples).
 
 API
@@ -28,6 +93,14 @@ Limitations
 -----------
 
 * Views are not streamed, they are kept in RAM, so you have to limit the views.
+
+
+Tests
+-----
+
+    mocha
+    ..............
+    ✔ 14 tests complete (12ms)
 
 
 License
