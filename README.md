@@ -68,25 +68,7 @@ Require `coup` and call it:
 
 
 
-Look at [examples](coup.js/tree/master/examples).
-
-API
----
-
-### Coup(ddoc, options)
-
-Register a coup app and start routing.
-Equivalents to `Coup.app(ddoc).start(options)`.
-
-
-### Coup.app(ddoc)
-
-Register a coup app.
-
-
-### Coup.start(options)
-
-Start routing.
+## Look at [examples](coup.js/tree/master/examples)
 
 
 Limitations
