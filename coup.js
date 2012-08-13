@@ -187,7 +187,7 @@
 
     options || (options = {});
     options.el || (options.el = 'app');
-    Coup.el = document.getElementById(options.el);
+    options.el = document.getElementById(options.el);
 
     var getTemplate = function(templates) {
       return function(path) {
@@ -205,13 +205,13 @@
       console.log('install route');
 
       function getEl() {
-        return (route.query.el && document.getElementById(route.query.el)) || Coup.el;
+        return (route.query.el && document.getElementById(route.query.el)) || options.el;
       }
 
       function render(view, ctx) {
         var el = getEl();
 
-        if (!el) return console.error('No Coup.el DOM element!');
+        if (!el) return console.error('No DOM element!');
 
         // skip if content has not changed
         view.checksum = checksum(view, templateName, modelName);
@@ -226,10 +226,6 @@
         view.query = ctx.params;
 
         el.innerHTML = Mustache.render(template(templateName), model.view(view), app.templates);
-
-        // TODO: implement callbacks
-        //   to add body class `loading`
-        //   and run init function after rendering
       }
 
       // list callback for page route
@@ -249,10 +245,14 @@
         var viewName = route.to.split('/', 3)[2];
 
         console.log('fetch doc');
+        if (typeof options.loading === 'function') options.loading();
+
         Coup.couch.doc(ctx.params.id, {
           success: function(view) {
             console.log('render fetched doc');
             render(view, ctx);
+
+            if (typeof options.complete === 'function') options.complete();
           }
         })
       });
@@ -266,9 +266,13 @@
         var viewName = route.to.split('/', 3)[2];
 
         console.log('fetch view');
+        if (typeof options.loading === 'function') options.loading();
+
         Coup.couch.view(viewName, route.query, ctx, {
           success: function(view) {
             console.log('render fetched view');
+            if (typeof options.complete === 'function') options.complete();
+
             render(view, ctx);
           }
         })

@@ -10,19 +10,19 @@
 
       "views": {
         "timeline": {
-          "map": "function(doc) { if (doc.date) emit(doc.date, null) }"
+          "map": "function(doc) { if (doc.date) emit(doc.date, null); }"
         }
       },
       "lists": {
-        "layout": "function(head, req) { return require('lib/coup').list(this, head, req) }"
+        "layout": "function(head, req) { return require('lib/coup').list(this, head, req); }"
       },
       "shows": {
-        "layout": "function(doc, req) { return require('lib/coup').show(this, doc, req) }"
+        "layout": "function(doc, req) { return require('lib/coup').show(this, doc, req); }"
       },
 
       "models": {
-        "home": "exports.view = function(view) { return view }",
-        "page": "exports.view = function(doc) { return doc }"
+        "home": "exports.view = function(view) { return view; }",
+        "page": "exports.view = function(doc) { return doc; }"
       },
       "templates": {
       "layout": "<div id=app data-checksum=\"{{checksum}}\">{{> yield }}</div><script src=\"{{{urlRoot}}}app.js\">Coup({{{app}}})</script><script>Coup({{{app}}})</script>",
