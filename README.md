@@ -68,7 +68,7 @@ Require `coup` and call it:
 
 
 
-## Look at [examples](coup.js/tree/master/examples)
+# Look at [examples](coup.js/tree/master/examples)!
 
 
 Limitations
