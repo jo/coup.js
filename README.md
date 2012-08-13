@@ -3,6 +3,8 @@ Coup.js
 
 Tiny script plays client side with CouchDB rewrites, lists and shows.
 
+Look at [examples](coup.js/tree/master/examples).
+
 API
 ---
 
