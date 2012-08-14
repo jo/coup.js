@@ -239,7 +239,6 @@
           el.innerHTML = Mustache.render(template(templateName), model.view(view), app.templates);
         }
 
-        console.log('render done done done');
         if (typeof options.complete === 'function') options.complete();
       }
 
