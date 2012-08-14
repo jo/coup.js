@@ -230,11 +230,16 @@
           // extend view
           view.urlRoot = Coup.urlRoot;
           templateName = templateName;
-          view.query = ctx.params;
+          // note that ctx.params is an array but we are interested only in named params
+          view.query = {};
+          for (var param in ctx.params) {
+            view.query[param] = ctx.params[param];
+          }
 
           el.innerHTML = Mustache.render(template(templateName), model.view(view), app.templates);
         }
 
+        console.log('render done done done');
         if (typeof options.complete === 'function') options.complete();
       }
 
