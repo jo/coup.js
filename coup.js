@@ -233,12 +233,16 @@
         view.query = ctx.params;
 
         el.innerHTML = Mustache.render(template(templateName), model.view(view), app.templates);
+
+        if (typeof options.complete === 'function') options.complete();
       }
 
       // list callback for page route
       return function(ctx) {
         log('call ' + route.from);
         log(ctx);
+
+        if (typeof options.loading === 'function') options.loading();
 
         fn(ctx, render)
       }
@@ -252,14 +256,11 @@
         var viewName = route.to.split('/', 3)[2];
 
         log('fetch doc');
-        if (typeof options.loading === 'function') options.loading();
 
         Coup.couch.doc(ctx.params.id, {
           success: function(view) {
             log('render fetched doc');
             render(view, ctx);
-
-            if (typeof options.complete === 'function') options.complete();
           }
         })
       });
@@ -273,13 +274,10 @@
         var viewName = route.to.split('/', 3)[2];
 
         log('fetch view');
-        if (typeof options.loading === 'function') options.loading();
 
         Coup.couch.view(viewName, route.query, ctx, {
           success: function(view) {
             log('render fetched view');
-            if (typeof options.complete === 'function') options.complete();
-
             render(view, ctx);
           }
         })
