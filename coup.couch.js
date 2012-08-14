@@ -45,9 +45,7 @@
     var layoutName = req.query.layout || defaultLayoutName,
         templateName = req.query.template || defaultTemplateName,
         modelName = req.query.model || templateName,
-        model = require('models/' + modelName),
-        partials = JSON.parse(JSON.stringify(ddoc.templates)),
-        mustache = require('lib/mustache');
+        partials = JSON.parse(JSON.stringify(ddoc.templates));
 
     view || (view = {});
 
@@ -60,6 +58,8 @@
     // export exposed ddoc parts
     view.app = JSON.stringify({
       _id: ddoc._id,
+      // note that we have to include the model *obove* this
+      // in order to prevent from a cyclic object value bug in CouchDB 1.1
       models: ddoc.models,
       rewrites: ddoc.rewrites,
       templates: ddoc.templates
@@ -71,7 +71,7 @@
     if (typeof fn === 'function') fn(view);
 
     // render
-    return mustache.render(getTemplate(ddoc, layoutName), model.view(view), partials);
+    return require('lib/mustache').render(getTemplate(ddoc, layoutName), require('models/' + modelName).view(view), partials);
   };
 
   // render list function
