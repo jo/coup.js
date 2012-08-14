@@ -1,0 +1,32 @@
+[
+  {
+    "from": "app.js",
+    "to": "app.js"
+  },
+  {
+    "from": "",
+    "to": "_list/layout/timeline",
+    "query": {
+      "template": "home",
+      "include_docs": "true",
+      "update_seq": "true",
+      "descending": "true",
+      "limit": "100"
+    }
+  },
+  {
+    "from": ":id",
+    "to": "_show/layout/:id",
+    "query": {
+      "template": "page"
+    }
+  },
+  {
+    "from": "api/ddoc/*",
+    "to": "*"
+  },
+  {
+    "from": "api/*",
+    "to": "../../*"
+  }
+]

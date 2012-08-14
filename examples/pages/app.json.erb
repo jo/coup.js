@@ -3,69 +3,25 @@
     {
       "_id": "_design/pages",
 
-      "lib": {
-        "coup": <%=h read '../../coup.couch.js' %>,
-        "mustache": <%=h read '../../lib/mustache.js' %>
-      },
+      "lib": <%= map 'lib' %>,
+      "models": <%= map 'models' %>,
+      "templates": <%= map 'templates' %>,
 
-      "views": {
-        "timeline": {
-          "map": "function(doc) { if (doc.date) emit(doc.date, null); }"
-        }
-      },
-      "lists": {
-        "layout": "function(head, req) { return require('lib/coup').list(this, head, req); }"
-      },
-      "shows": {
-        "layout": "function(doc, req) { return require('lib/coup').show(this, doc, req); }"
-      },
+      "views": <%= map 'views' %>,
+      "lists": <%= map 'lists' %>,
+      "shows": <%= map 'shows' %>,
 
-      "models": {
-        "home": "exports.view = function(view) { return view; }",
-        "page": "exports.view = function(doc) { return doc; }"
-      },
-      "templates": {
-      "layout": "<div id=app data-checksum=\"{{checksum}}\">{{> yield }}</div><script src=\"{{{urlRoot}}}app.js\">Coup({{{app}}})</script><script>Coup({{{app}}})</script>",
-        "home": "{{#rows}}{{#doc}}<a href=\"{{{urlRoot}}}{{_id}}\">{{title}}</a>{{/doc}}{{/rows}}",
-        "page": "<h2>{{title}}</h2>{{{body}}} <a href='{{{urlRoot}}}'>Back</a>"
-      },
-
-      "rewrites": [
-        {
-          "from": "app.js",
-          "to": "app.js"
-        },
-        {
-          "from": "",
-          "to": "_list/layout/timeline",
-          "query": {
-            "template": "home",
-            "include_docs": "true",
-            "update_seq": "true",
-            "descending": "true",
-            "limit": "100"
-          }
-        },
-        {
-          "from": ":id",
-          "to": "_show/layout/:id",
-          "query": {
-            "template": "page"
-          }
-        },
-        {
-          "from": "api/ddoc/*",
-          "to": "*"
-        },
-        {
-          "from": "api/*",
-          "to": "../../*"
-        }
-      ],
+      "rewrites": <%= read 'rewrites.json' %>,
       
       "_attachments": {
-        "app.js": <%= attachment ['../../coup.js', '../../lib/*.js'], 'application/json' %>
+        "app.js": <%= attachment 'attachments/*.js', 'application/json' %>
       }
+    },
+    {
+      "_id": "mypage",
+      "title": "This is my Page",
+      "body": "<p>And you are my visitor.</p>",
+      "date": "2012-08-14T08:56:37.254Z"
     }
   ]
 }

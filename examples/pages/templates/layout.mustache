@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang=en>
+  <head>
+    <meta charset=utf-8>
+    <title>Coup.js Example: Pages</title>
+    <meta name=author content="Johannes J. Schmidt, TF, Berlin">
+    <script src="{{{urlRoot}}}app.js"></script>
+  </head>
+  <body>
+    <h1>Coup.js Example: Pages</h1>
+    <div id=app data-checksum="{{checksum}}">
+      {{> yield }}
+    </div>
+    <script>Coup({{{app}}})</script>
+  </body>
+</html>
