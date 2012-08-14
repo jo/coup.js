@@ -82,7 +82,7 @@ Tests
 
     mocha
     ..............
-    ✔ 14 tests complete (12ms)
+    ✔ 14 tests complete (3ms)
 
 
 License
