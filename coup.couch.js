@@ -56,14 +56,16 @@
     view.query = req.query;
 
     // export exposed ddoc parts
-    view.app = JSON.stringify({
+    // Note that we have to include the model *obove* this
+    // and have the dance to store the serialized app inside the ddoc
+    // in order to prevent from a cyclic object value bug in CouchDB 1.1
+    view.app = ddoc.app || JSON.stringify({
       _id: ddoc._id,
-      // note that we have to include the model *obove* this
-      // in order to prevent from a cyclic object value bug in CouchDB 1.1
       models: ddoc.models,
       rewrites: ddoc.rewrites,
       templates: ddoc.templates
     }).replace(/<\/script>/g, '<\\/script>');
+    ddoc.app = view.app;
 
     // bind template to yield
     partials.yield = getTemplate(ddoc, templateName);
