@@ -2,6 +2,7 @@
   var defaultLayoutName = 'layout',
       defaultTemplateName = 'index';
 
+  // checksum toi check if a view needs to be rendered
   function checksum(view, templateName, modelName) {
     if (view._id && view._rev) {
       // docs
@@ -20,10 +21,7 @@
         modelName
       ].join('-');
     }
-    return [
-      templateName,
-      modelName
-    ].join('-');
+    return null;
   }
 
   // calculate url root from requested path, eg

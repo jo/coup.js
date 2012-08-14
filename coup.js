@@ -1,6 +1,14 @@
 (function(){
   var defaultTemplateName = 'index';
 
+  // console.log wrapper
+  function log() {
+    if (typeof window.console === 'object') {
+      console.log.apply(window.console, Array.prototype.slice.call(arguments));
+    }
+  }
+
+  // checksum toi check if a view needs to be rendered
   function checksum(view, templateName, modelName) {
     if (view._id && view._rev) {
       // docs
@@ -19,10 +27,7 @@
         modelName
       ].join('-');
     }
-    return [
-      templateName,
-      modelName
-    ].join('-');
+    return null;
   }
 
   // `Coup()`
@@ -121,7 +126,8 @@
           if (xhr.status < 300) {
             options.success(JSON.parse(xhr.responseText))
           } else {
-            console.warn(xhr, xhr.status, xhr.statusText);
+            log('Error fetching doc:');
+            log(xhr, xhr.status, xhr.statusText);
           }
         }
       };
@@ -140,7 +146,8 @@
           if (xhr.status < 300) {
             options.success(JSON.parse(xhr.responseText));
           } else {
-            console.warn(xhr, xhr.status, xhr.statusText);
+            log('Error fetching view:');
+            log(xhr, xhr.status, xhr.statusText);
           }
         }
       };
@@ -202,7 +209,7 @@
           template = getTemplate(app.templates),
           model = Coup.require('models/' + modelName);
 
-      console.log('install route');
+      log('install route');
 
       function getEl() {
         return (route.query.el && document.getElementById(route.query.el)) || options.el;
@@ -211,14 +218,14 @@
       function render(view, ctx) {
         var el = getEl();
 
-        if (!el) return console.error('No DOM element!');
+        if (!el) return log('No DOM element found!');
 
         // skip if content has not changed
         view.checksum = checksum(view, templateName, modelName);
-        if (el.hasAttribute('data-checksum') && el.getAttribute('data-checksum') === view.checksum) return console.log('not changed: no need to render');
+        if (el.hasAttribute('data-checksum') && el.getAttribute('data-checksum') === view.checksum) return log('not changed: no need to render');
         el.setAttribute('data-checksum', view.checksum);
         
-        console.log('render view ' + templateName + '/' + modelName + ' into ' + el.id);
+        log('render view ' + templateName + '/' + modelName + ' into ' + el.id);
 
         // extend view
         view.urlRoot = Coup.urlRoot;
@@ -230,8 +237,8 @@
 
       // list callback for page route
       return function(ctx) {
-        console.log('call ' + route.from);
-        console.log(ctx);
+        log('call ' + route.from);
+        log(ctx);
 
         fn(ctx, render)
       }
@@ -239,17 +246,17 @@
 
     // install show function
     function installShow(app, route) {
-      console.log('install show');
+      log('install show');
 
       return installRenderer(app, route, function(ctx, render) {
         var viewName = route.to.split('/', 3)[2];
 
-        console.log('fetch doc');
+        log('fetch doc');
         if (typeof options.loading === 'function') options.loading();
 
         Coup.couch.doc(ctx.params.id, {
           success: function(view) {
-            console.log('render fetched doc');
+            log('render fetched doc');
             render(view, ctx);
 
             if (typeof options.complete === 'function') options.complete();
@@ -260,17 +267,17 @@
 
     // install list function
     function installList(app, route) {
-      console.log('install list');
+      log('install list');
 
       return installRenderer(app, route, function(ctx, render) {
         var viewName = route.to.split('/', 3)[2];
 
-        console.log('fetch view');
+        log('fetch view');
         if (typeof options.loading === 'function') options.loading();
 
         Coup.couch.view(viewName, route.query, ctx, {
           success: function(view) {
-            console.log('render fetched view');
+            log('render fetched view');
             if (typeof options.complete === 'function') options.complete();
 
             render(view, ctx);
@@ -283,8 +290,8 @@
     for (var id in Coup.apps) {
       app = Coup.apps[id];
 
-      console.log('init routing: ' + id);
-      console.log(app);
+      log('init routing: ' + id);
+      log(app);
 
       // install rewrites for app
       // if present
@@ -295,14 +302,14 @@
 
           if (route.to.match('^_show/layout/')) {
             // install show route
-            console.log('install show layout route: ' + from);
-            console.log(route);
+            log('install show layout route: ' + from);
+            log(route);
 
             page(from, installShow(app, route));
           } else if (route.to.match('^_list/layout/')) {
             // install list route
-            console.log('install list layout route: ' + from);
-            console.log(route);
+            log('install list layout route: ' + from);
+            log(route);
 
             page(from, installList(app, route));
           }
@@ -311,7 +318,7 @@
     }
 
     // start routing
-    console.log('start routing...');
+    log('start routing...');
     page();
   };
 
