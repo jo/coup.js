@@ -44,6 +44,7 @@
   function CouchCoup(ddoc, view, req, fn) {
     var layoutName = req.query.layout || defaultLayoutName,
         templateName = req.query.template || defaultTemplateName,
+        viewName = req.path[5],
         modelName = req.query.model || templateName,
         partials = JSON.parse(JSON.stringify(ddoc.templates));
 
@@ -53,6 +54,7 @@
     view.urlRoot = urlRoot(req);
     view.checksum = checksum(view, templateName, modelName);
     view.templateName = templateName;
+    view.viewName = viewName;
     view.query = req.query;
 
     // export exposed ddoc parts

@@ -205,6 +205,7 @@
     // install function
     function installRenderer(app, route, fn) {
       var templateName = (route.query && route.query.template) || defaultTemplateName,
+          viewName = route.to.split('/', 3)[2],
           modelName = (route.query && route.query.model) || templateName,
           template = getTemplate(app.templates),
           model = Coup.require('models/' + modelName);
@@ -229,7 +230,8 @@
 
           // extend view
           view.urlRoot = Coup.urlRoot;
-          templateName = templateName;
+          view.templateName = templateName;
+          view.viewName = viewName;
           // note that ctx.params is an array but we are interested only in named params
           view.query = {};
           for (var param in ctx.params) {
@@ -239,7 +241,7 @@
           el.innerHTML = Mustache.render(template(templateName), model.view(view), app.templates);
         }
 
-        if (typeof options.complete === 'function') options.complete();
+        if (typeof options.complete === 'function') options.complete(templateName, viewName);
       }
 
       // list callback for page route
